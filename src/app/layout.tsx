@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { ChakraProvider } from '@chakra-ui/react';
+import { ApolloProvider } from '@apollo/client';
+import client from '../lib/apolloClient';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +30,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        {/* Providers for Chakra UI and Apollo Client */}
+        <ChakraProvider>
+          <ApolloProvider client={client}>
+            {children}
+          </ApolloProvider>
+        </ChakraProvider>
       </body>
     </html>
   );
