@@ -1,9 +1,9 @@
 import { ApolloClient, InMemoryCache } from '@apollo/client';
 
-// Apollo Client setup for the public Countries GraphQL API
-// See: https://countries.trevorblades.com/
+// Apollo Client setup for the AniList GraphQL API
+// See: https://anilist.co/graphiql
 const client = new ApolloClient({
-  uri: 'https://countries.trevorblades.com/',
+  uri: 'https://graphql.anilist.co',
   cache: new InMemoryCache(),
 });
 
