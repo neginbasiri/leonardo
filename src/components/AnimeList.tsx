@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/client';
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import ErrorBoundary from './ErrorBoundary';
-import { useFieldValidation, VALIDATION_SCHEMAS } from '../lib/validation';
+import { VALIDATION_SCHEMA } from '../lib/validation';
 import {
   Box,
   Grid,
@@ -69,13 +69,7 @@ export default function AnimeList({
   const [selectedAnime, setSelectedAnime] = useState<Anime | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Search validation
-  const {
-    isValid: isSearchValid,
-    errors: searchErrors,
-    touched: searchTouched,
-    markAsTouched: markSearchAsTouched,
-  } = useFieldValidation(searchTerm, VALIDATION_SCHEMAS.SEARCH.query, true);
+  // No search validation needed
 
   // Update URL when state changes
   const updateURL = useCallback((newPage: number, newSearch: string, newPerPage: number) => {
@@ -154,7 +148,7 @@ export default function AnimeList({
     return (
       <Flex justify="center" align="center" minH="400px">
         <Box role="status" aria-live="polite">
-          <Spinner size="xl" color="teal.500" aria-label="Loading anime data" />
+          <Spinner size="xl" color="white" aria-label="Loading anime data" />
           <Text position="absolute" width="1px" height="1px" padding="0" margin="-1px" overflow="hidden" clip="rect(0, 0, 0, 0)" whiteSpace="nowrap" border="0">
             Loading anime data, please wait...
           </Text>
@@ -204,20 +198,13 @@ export default function AnimeList({
                 value={searchTerm}
                 onChange={(e) => {
                   handleSearch(e.target.value);
-                  markSearchAsTouched();
                 }}
-                onBlur={() => markSearchAsTouched()}
+                onBlur={() => {}}
                 size="lg"
                 pl={10}
                 aria-label="Search anime database"
                 role="searchbox"
-                aria-invalid={searchTouched && !isSearchValid}
               />
-              {searchTouched && searchErrors.length > 0 && (
-                <Text fontSize="sm" color="red.500" mt={1}>
-                  {searchErrors[0]}
-                </Text>
-              )}
             </Box>
 
             {/* Controls Row */}

@@ -1,11 +1,11 @@
-# Anime Explorer - AniList GraphQL Integration
+# Anime Explorer - Anime list GraphQL Integration
 
-A Next.js application that integrates with the AniList GraphQL API to display anime data with images. The application requires user authentication (username and job title) before allowing access to the anime data.
+A Next.js application that integrates with the Anime list GraphQL API to display anime data with images. The application requires user authentication (username and job title) before allowing access to the anime data.
 
 ## Features
 
 - **User Authentication**: Users must enter their username and job title before accessing the application
-- **AniList GraphQL Integration**: Uses Apollo Client to query the AniList GraphQL API
+- **Anime list GraphQL Integration**: Uses Apollo Client to query the Anime list GraphQL API
 - **Anime Data Display**: Shows anime with cover images, titles, descriptions, ratings, and metadata
 - **Search Functionality**: Search anime by title
 - **Responsive Design**: Built with Chakra UI for a modern, responsive interface
@@ -21,7 +21,7 @@ A Next.js application that integrates with the AniList GraphQL API to display an
 - **Apollo Client**: GraphQL client for data fetching
 - **Chakra UI v3**: Modern component library for UI
 - **TypeScript**: Type-safe development
-- **AniList GraphQL API**: Public anime database API
+- **Anime list GraphQL API**: Public anime database API
 
 ## URL Parameters
 
@@ -81,12 +81,12 @@ src/
 │   └── UserContext.tsx       # User state management
 └── lib/
     ├── apolloClient.ts       # Apollo Client configuration
-    └── queries.ts            # GraphQL queries for AniList API
+    └── queries.ts            # GraphQL queries for Anime list API
 ```
 
 ## API Integration
 
-The application integrates with the AniList GraphQL API (`https://graphql.anilist.co`) to fetch:
+The application integrates with the Anime list GraphQL API (`https://graphql.Anime list.co`) to fetch:
 
 - Popular anime listings
 - Search results by title

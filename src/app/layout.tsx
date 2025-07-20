@@ -5,9 +5,11 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from './providers';
 import { useState, useEffect } from 'react';
+import { useHydration } from '../hooks/useHydration';
 import { useUser } from '../contexts/UserContext';
 import ErrorBoundary from '../components/ErrorBoundary';
-import { useFormValidation, VALIDATION_SCHEMAS } from '../lib/validation';
+import useFormValidation from '../hooks/useFormValidation';
+import { VALIDATION_SCHEMA } from '../lib/validation';
 import {
   DialogRoot,
   DialogContent,
@@ -41,12 +43,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const { user, setUser, isLoading } = useUser();
   const [editing, setEditing] = useState(false);
   const [submitAttempted, setSubmitAttempted] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  // Set mounted to true after hydration
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const isHydrated = useHydration();
 
   // Initialize form validation hooks (always call hooks in the same order)
   const {
@@ -60,16 +57,16 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     errors,
   } = useFormValidation(
     { username: user?.username || '', jobTitle: user?.job || '' },
-    VALIDATION_SCHEMAS.USER_INFO,
+    // VALIDATION_SCHEMA is now used internally in useFormValidation
     true // validate on change
   );
 
   // Only run modal logic after mount AND user data is loaded
   useEffect(() => {
-    if (mounted && !isLoading && !user && !editing) {
+    if (isHydrated && !isLoading && !user && !editing) {
       setEditing(true);
     }
-  }, [mounted, isLoading, user, editing]);
+  }, [isHydrated, isLoading, user, editing]);
 
   // Open modal for editing
   const handleEdit = () => {
@@ -92,9 +89,9 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     }
   };
 
-  // Block page if no user info (only after mounting AND loading is complete)
-  const shouldBlock = mounted && !isLoading && !user && !editing;
-  const shouldShowModal = mounted && !isLoading && (shouldBlock || editing);
+  // Block page if no user info (only after hydration AND loading is complete)
+  const shouldBlock = isHydrated && !isLoading && !user && !editing;
+  const shouldShowModal = isHydrated && !isLoading && (shouldBlock || editing);
 
   // Handle body scroll locking when modal is open
   useEffect(() => {
@@ -109,6 +106,10 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       document.body.style.overflow = 'unset';
     };
   }, [shouldShowModal]);
+
+  if (!isHydrated) {
+    return null;
+  }
 
   return (
     <>
@@ -247,13 +248,12 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                   </Box>
                 )}
 
-                <Flex mt={4} justify="space-between">
+                <Flex mt={4} justify="flex-end" gap={2}>
                   {user && editing && (
                     <Button 
-                      variant="solid" 
+                      variant="outline" 
                       colorScheme="gray" 
                       onClick={() => { setEditing(false); }}
-                      _hover={{ bg: 'gray.600' }}
                     >
                       Cancel
                     </Button>
@@ -272,8 +272,8 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         </DialogContent>
       </DialogRoot>
       
-      {/* Show user info and edit button if available - only show after mounting AND loading */}
-      {mounted && !isLoading && user && (
+      {/* Show user info and edit button if available - only show after hydration AND loading */}
+      {isHydrated && !isLoading && user && (
         <Box bg="gray.900" borderBottom="1px" borderColor="gray.700">
           <Container maxW="container.xl">
             <Flex align="center" justify="center" p={4}>
@@ -332,7 +332,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body suppressHydrationWarning={true}>
+      <body>
         <Providers>
           <ErrorBoundary>
             <LayoutContent>

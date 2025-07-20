@@ -5,6 +5,7 @@ import { useUser } from '../../contexts/UserContext';
 import AnimeList from '../../components/AnimeList';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
+import Loader from '../../components/Loader';
 
 export default function InformationPage() {
   const { user, isLoading } = useUser();
@@ -16,11 +17,7 @@ export default function InformationPage() {
   const initialPerPage = parseInt(searchParams.get('perPage') || '12');
 
   if (isLoading) {
-    return (
-      <Container maxW="container.xl" as="main" minH="100vh">
-        <Text>Loading...</Text>
-      </Container>
-    );
+    return <Loader />;
   }
 
   if (!user) {
@@ -56,7 +53,7 @@ export default function InformationPage() {
             Anime Information
           </Heading>
           <Text color="white" fontSize="lg">
-            Browse and search through our comprehensive anime list powered by AniList
+            Browse and search through our comprehensive anime list powered by Anime list
           </Text>
         </Box>
         

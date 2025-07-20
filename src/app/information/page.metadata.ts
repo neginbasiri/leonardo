@@ -1,9 +1,9 @@
 export const metadata = {
   title: 'Anime Information | Search & Discover | Anime Explorer',
-  description: 'Browse, search, and discover anime with detailed information, images, and ratings. Powered by AniList GraphQL and Next.js.',
+  description: 'Browse, search, and discover anime with detailed information, images, and ratings. Powered by Anime list GraphQL and Next.js.',
   openGraph: {
     title: 'Anime Information | Search & Discover | Anime Explorer',
-    description: 'Browse, search, and discover anime with detailed information, images, and ratings. Powered by AniList GraphQL and Next.js.',
+    description: 'Browse, search, and discover anime with detailed information, images, and ratings. Powered by Anime list GraphQL and Next.js.',
     url: 'https://your-domain.com/information',
     siteName: 'Anime Explorer',
     images: [

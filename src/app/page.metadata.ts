@@ -1,9 +1,9 @@
 export const metadata = {
-  title: 'Anime Explorer | AniList GraphQL Database',
-  description: 'Explore anime data with images, search, and details using the AniList GraphQL API. Accessible, fast, and beautiful UI built with Next.js and Chakra UI.',
+  title: 'Anime Explorer | Anime list GraphQL Database',
+  description: 'Explore anime data with images, search, and details using the Anime list GraphQL API. Accessible, fast, and beautiful UI built with Next.js and Chakra UI.',
   openGraph: {
-    title: 'Anime Explorer | AniList GraphQL Database',
-    description: 'Explore anime data with images, search, and details using the AniList GraphQL API. Accessible, fast, and beautiful UI built with Next.js and Chakra UI.',
+    title: 'Anime Explorer | Anime list GraphQL Database',
+    description: 'Explore anime data with images, search, and details using the Anime list GraphQL API. Accessible, fast, and beautiful UI built with Next.js and Chakra UI.',
     url: 'https://your-domain.com/',
     siteName: 'Anime Explorer',
     images: [
@@ -19,8 +19,8 @@ export const metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Anime Explorer | AniList GraphQL Database',
-    description: 'Explore anime data with images, search, and details using the AniList GraphQL API.',
+    title: 'Anime Explorer | Anime list GraphQL Database',
+    description: 'Explore anime data with images, search, and details using the Anime list GraphQL API.',
     images: ['/public/globe.svg'],
     creator: '@yourtwitter',
   },

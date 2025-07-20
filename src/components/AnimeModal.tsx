@@ -127,94 +127,101 @@ export default function AnimeModal({ anime, isOpen, onClose }: AnimeModalProps) 
           {/* Header with Image and Basic Info */}
           <Flex gap={6} direction={{ base: 'column', md: 'row' }}>
             {/* Cover Image */}
-            <Box flexShrink={0}>
+            <Box flexShrink={0} minW={{ base: '100%', md: '200px' }} maxW={{ base: '100%', md: '200px' }}>
               <Image
                 src={anime.coverImage.large}
                 alt={`Cover image for ${anime.title.english || anime.title.romaji}`}
                 borderRadius="lg"
-                width="200px"
-                height="300px"
+                width={{ base: '100%', md: '200px' }}
+                height={{ base: 'auto', md: '300px' }}
+                maxH={{ base: '300px', md: '300px' }}
                 objectFit="cover"
+                objectPosition="center"
                 shadow="lg"
               />
             </Box>
 
-            {/* Basic Information */}
-            <VStack align="start" gap={4} flex={1}>
-              {/* Alternative Titles */}
-              {anime.title.english && anime.title.romaji !== anime.title.english && (
-                <Box>
-                  <Text fontWeight="semibold" color="gray.800" mb={1}>
-                    Japanese Title:
-                  </Text>
-                  <Text fontSize="lg" color="gray.800">{anime.title.romaji}</Text>
-                </Box>
-              )}
+            {/* Basic Information - 2 columns on desktop, 1 on mobile */}
+            <Box flex={1} w="100%">
+              <Flex direction={{ base: 'column', md: 'row' }} gap={6} w="100%">
+                <VStack align="start" gap={4} flex={1} minW={0}>
+                  {/* Alternative Titles */}
+                  {anime.title.english && anime.title.romaji !== anime.title.english && (
+                    <Box>
+                      <Text fontWeight="semibold" color="gray.800" mb={1}>
+                        Japanese Title:
+                      </Text>
+                      <Text fontSize="lg" color="gray.800">{anime.title.romaji}</Text>
+                    </Box>
+                  )}
 
-              {anime.title.native && (
-                <Box>
-                  <Text fontWeight="semibold" color="gray.800" mb={1}>
-                    Native Title:
-                  </Text>
-                  <Text fontSize="lg" color="gray.800">{anime.title.native}</Text>
-                </Box>
-              )}
+                  {anime.title.native && (
+                    <Box>
+                      <Text fontWeight="semibold" color="gray.800" mb={1}>
+                        Native Title:
+                      </Text>
+                      <Text fontSize="lg" color="gray.800">{anime.title.native}</Text>
+                    </Box>
+                  )}
 
-              {/* Score */}
-              {anime.averageScore && (
-                <Box>
-                  <Text fontWeight="semibold" color="gray.800" mb={1}>
-                    Rating:
-                  </Text>
-                  <HStack gap={2}>
-                    <Badge colorScheme="green" variant="solid" fontSize="md">
-                      {anime.averageScore / 10}★
-                    </Badge>
-                    <Text fontSize="sm" color="gray.800">
-                      ({anime.averageScore}% score)
+                  {/* Score */}
+                  {anime.averageScore && (
+                    <Box>
+                      <Text fontWeight="semibold" color="gray.800" mb={1}>
+                        Rating:
+                      </Text>
+                      <HStack gap={2}>
+                        <Badge colorScheme="green" variant="solid" fontSize="md">
+                          {anime.averageScore / 10}★
+                        </Badge>
+                        <Text fontSize="sm" color="gray.800">
+                          ({anime.averageScore}% score)
+                        </Text>
+                      </HStack>
+                    </Box>
+                  )}
+                </VStack>
+                <VStack align="start" gap={4} flex={1} minW={0}>
+                  {/* Status */}
+                  <Box>
+                    <Text fontWeight="semibold" color="gray.800" mb={1}>
+                      Status:
                     </Text>
-                  </HStack>
-                </Box>
-              )}
+                    <Badge
+                      colorScheme={
+                        anime.status === 'FINISHED' ? 'green' :
+                        anime.status === 'RELEASING' ? 'blue' :
+                        anime.status === 'NOT_YET_RELEASED' ? 'yellow' : 'gray'
+                      }
+                      variant="outline"
+                      fontSize="md"
+                    >
+                      {formatStatus(anime.status)}
+                    </Badge>
+                  </Box>
 
-              {/* Status */}
-              <Box>
-                <Text fontWeight="semibold" color="gray.800" mb={1}>
-                  Status:
-                </Text>
-                <Badge
-                  colorScheme={
-                    anime.status === 'FINISHED' ? 'green' :
-                    anime.status === 'RELEASING' ? 'blue' :
-                    anime.status === 'NOT_YET_RELEASED' ? 'yellow' : 'gray'
-                  }
-                  variant="outline"
-                  fontSize="md"
-                >
-                  {formatStatus(anime.status)}
-                </Badge>
-              </Box>
+                  {/* Episodes */}
+                  {anime.episodes && (
+                    <Box>
+                      <Text fontWeight="semibold" color="gray.800" mb={1}>
+                        Episodes:
+                      </Text>
+                      <Text fontSize="lg" color="gray.800">{anime.episodes}</Text>
+                    </Box>
+                  )}
 
-              {/* Episodes */}
-              {anime.episodes && (
-                <Box>
-                  <Text fontWeight="semibold" color="gray.800" mb={1}>
-                    Episodes:
-                  </Text>
-                  <Text fontSize="lg" color="gray.800">{anime.episodes}</Text>
-                </Box>
-              )}
-
-              {/* Season */}
-              {anime.season && anime.seasonYear && (
-                <Box>
-                  <Text fontWeight="semibold" color="gray.800" mb={1}>
-                    Season:
-                  </Text>
-                  <Text fontSize="lg" color="gray.800">{formatSeason(anime.season, anime.seasonYear)}</Text>
-                </Box>
-              )}
-            </VStack>
+                  {/* Season */}
+                  {anime.season && anime.seasonYear && (
+                    <Box>
+                      <Text fontWeight="semibold" color="gray.800" mb={1}>
+                        Season:
+                      </Text>
+                      <Text fontSize="lg" color="gray.800">{formatSeason(anime.season, anime.seasonYear)}</Text>
+                    </Box>
+                  )}
+                </VStack>
+              </Flex>
+            </Box>
           </Flex>
 
 
