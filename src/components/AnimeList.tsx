@@ -1,10 +1,9 @@
 'use client';
 
 import { useQuery } from '@apollo/client';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import ErrorBoundary from './ErrorBoundary';
-import { VALIDATION_SCHEMA } from '../lib/validation';
 import {
   Box,
   Grid,
@@ -20,7 +19,8 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { GET_POPULAR_ANIME, SEARCH_ANIME } from '../lib/queries';
-import AnimeModal from './AnimeModal';
+import dynamic from 'next/dynamic';
+const AnimeModal = dynamic(() => import('./AnimeModal'), { ssr: false, loading: () => null });
 
 interface Anime {
   id: number;
@@ -64,6 +64,8 @@ export default function AnimeList({
   const searchParams = useSearchParams();
   
   const [searchTerm, setSearchTerm] = useState(initialSearch);
+  const [debouncedSearch, setDebouncedSearch] = useState(initialSearch);
+  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
   const [page, setPage] = useState(initialPage);
   const [perPage, setPerPage] = useState(initialPerPage);
   const [selectedAnime, setSelectedAnime] = useState<Anime | null>(null);
@@ -84,10 +86,10 @@ export default function AnimeList({
 
   // Use search query if search term exists, otherwise use popular anime query
   const { loading, error, data } = useQuery<AnimeData>(
-    searchTerm ? SEARCH_ANIME : GET_POPULAR_ANIME,
+    debouncedSearch ? SEARCH_ANIME : GET_POPULAR_ANIME,
     {
       variables: {
-        search: searchTerm || undefined,
+        search: debouncedSearch || undefined,
         page,
         perPage,
       },
@@ -98,8 +100,25 @@ export default function AnimeList({
   const handleSearch = useCallback((value: string) => {
     setSearchTerm(value);
     setPage(1); // Reset to first page when searching
-    updateURL(1, value, perPage);
-  }, [updateURL, perPage]);
+  }, []);
+
+  // Debounce searchTerm and only trigger search if 3+ characters
+  useEffect(() => {
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+    debounceTimeout.current = setTimeout(() => {
+      if (searchTerm.length === 0 || searchTerm.length >= 3) {
+        setDebouncedSearch(searchTerm);
+        updateURL(1, searchTerm, perPage);
+      }
+    }, 400);
+    return () => {
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current);
+      }
+    };
+  }, [searchTerm, perPage, updateURL]);
 
   const handleNextPage = useCallback(() => {
     const newPage = page + 1;
@@ -133,16 +152,13 @@ export default function AnimeList({
     }, 100);
   }, []);
 
-  // Sync with URL parameters when they change
+  // On mount, set searchTerm from the URL (if needed)
   useEffect(() => {
-    const urlPage = parseInt(searchParams.get('page') || '1');
     const urlSearch = searchParams.get('search') || '';
-    const urlPerPage = parseInt(searchParams.get('perPage') || '12');
-    
-    if (urlPage !== page) setPage(urlPage);
-    if (urlSearch !== searchTerm) setSearchTerm(urlSearch);
-    if (urlPerPage !== perPage) setPerPage(urlPerPage);
-  }, [searchParams, page, searchTerm, perPage]);
+    setSearchTerm(urlSearch);
+    setDebouncedSearch(urlSearch);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (loading) {
     return (
@@ -196,15 +212,37 @@ export default function AnimeList({
               <Input
                 placeholder="Search anime by title..."
                 value={searchTerm}
-                onChange={(e) => {
-                  handleSearch(e.target.value);
-                }}
+                onChange={(e) => handleSearch(e.target.value)}
                 onBlur={() => {}}
                 size="lg"
                 pl={10}
                 aria-label="Search anime database"
                 role="searchbox"
+                aria-invalid={false}
               />
+              {searchTerm && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  position="absolute"
+                  right={3}
+                  top="50%"
+                  transform="translateY(-50%)"
+                  color="gray.300"
+                  zIndex={2}
+                  bg="transparent"
+                  border="none"
+                  minW={0}
+                  h="auto"
+                  p={0}
+                  onClick={() => handleSearch('')}
+                  _hover={{ color: 'white', bg: 'transparent' }}
+                  aria-label="Clear search"
+                  fontSize="xl"
+                >
+                  ×
+                </Button>
+              )}
             </Box>
 
             {/* Controls Row */}
@@ -223,9 +261,11 @@ export default function AnimeList({
                   style={{
                     padding: '4px 8px',
                     borderRadius: '4px',
-                    border: '1px solid #e2e8f0',
+                    border: '1px solid #2d3748', // gray.800 border
                     fontSize: '14px',
-                    width: '80px'
+                    width: '80px',
+                    background: '#1a202c', // gray.900
+                    color: 'white',
                   }}
                 >
                   <option value={6}>6</option>

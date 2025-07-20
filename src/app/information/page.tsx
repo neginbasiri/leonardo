@@ -5,7 +5,8 @@ import { useUser } from '../../contexts/UserContext';
 import AnimeList from '../../components/AnimeList';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import Loader from '../../components/Loader';
+import dynamic from 'next/dynamic';
+const Loader = dynamic(() => import('../../components/Loader'), { ssr: false, loading: () => null });
 
 export default function InformationPage() {
   const { user, isLoading } = useUser();

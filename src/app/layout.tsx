@@ -1,6 +1,5 @@
 'use client';
 
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from './providers';
@@ -9,7 +8,6 @@ import { useHydration } from '../hooks/useHydration';
 import { useUser } from '../contexts/UserContext';
 import ErrorBoundary from '../components/ErrorBoundary';
 import useFormValidation from '../hooks/useFormValidation';
-import { VALIDATION_SCHEMA } from '../lib/validation';
 import {
   DialogRoot,
   DialogContent,
@@ -276,14 +274,14 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       {isHydrated && !isLoading && user && (
         <Box bg="gray.900" borderBottom="1px" borderColor="gray.700">
           <Container maxW="container.xl">
-            <Flex align="center" justify="center" p={4}>
+            <Flex align="center" justify="flex-end" p={4}>
               <Text fontWeight="bold" mr={2} color="white">User:</Text>
               <Text mr={4} color="white">{user.username} ({user.job})</Text>
-              <Button 
-                size="sm" 
-                onClick={handleEdit} 
-                aria-label="Edit user information" 
-                colorScheme="teal" 
+              <Button
+                size="sm"
+                onClick={handleEdit}
+                aria-label="Edit user information"
+                colorScheme="teal"
                 variant="solid"
                 px={4}
                 py={2}
@@ -299,28 +297,29 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         </Box>
       )}
       
-      <div className="min-h-screen flex flex-col">
-        <div className="flex-1 flex flex-col" id="main-content">
+      <Box minH="100vh" display="flex" flexDirection="column" bg="gray.900" color="white">
+        <Box flex="1" display="flex" flexDirection="column" id="main-content" bg="gray.900">
           {children}
-        </div>
+        </Box>
         <Box borderTop="1px" borderColor="gray.700" bg="gray.900">
           <Container maxW="container.xl">
-            <Flex 
-              py={4} 
-              px={2} 
-              flexDir={{ base: "column", sm: "row" }} 
-              gap={{ base: 2, sm: 6 }} 
-              align="center" 
+            <Flex
+              py={4}
+              px={2}
+              flexDir={{ base: "column", sm: "row" }}
+              gap={{ base: 2, sm: 6 }}
+              align="center"
               justify="center"
               fontSize={{ base: "xs", sm: "sm" }}
+              color="gray.400"
             >
               <Box>
-                <span className="text-gray-400">Challenge Version: <b>1.0.0</b></span>
+                Challenge Version: <b>1.0.0</b>
               </Box>
             </Flex>
           </Container>
         </Box>
-      </div>
+      </Box>
     </>
   );
 }
