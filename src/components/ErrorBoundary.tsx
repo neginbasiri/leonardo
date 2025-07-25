@@ -8,10 +8,7 @@ import {
   Text,
   Button,
   Container,
-  Code,
   HStack,
-  IconButton,
-  useDisclosure,
 } from '@chakra-ui/react';
 
 interface Props {
@@ -104,10 +101,7 @@ interface ErrorFallbackProps {
   onReload: () => void;
 }
 
-function ErrorFallback({ error, errorInfo, onRetry, onReload }: ErrorFallbackProps) {
-  const { open: isOpen, onToggle } = useDisclosure();
-  const [showDetails, setShowDetails] = React.useState(false);
-
+function ErrorFallback({ onRetry, onReload }: ErrorFallbackProps) {
   return (
     <Container maxW="container.md" py={8}>
       <VStack gap={6} align="stretch">
@@ -143,7 +137,7 @@ function ErrorFallback({ error, errorInfo, onRetry, onReload }: ErrorFallbackPro
               Error Details
             </Heading>
             
-            {error && (
+            {/* error && (
               <Box>
                 <Text fontWeight="medium" mb={2}>
                   Error Message:
@@ -152,9 +146,9 @@ function ErrorFallback({ error, errorInfo, onRetry, onReload }: ErrorFallbackPro
                   {error.message}
                 </Code>
               </Box>
-            )}
+            ) */}
 
-            {errorInfo && (
+            {/* errorInfo && (
               <Box>
                 <HStack justify="space-between" align="center">
                   <Text fontWeight="medium">Stack Trace:</Text>
@@ -173,7 +167,7 @@ function ErrorFallback({ error, errorInfo, onRetry, onReload }: ErrorFallbackPro
                   </Code>
                 )}
               </Box>
-            )}
+            ) */}
           </VStack>
         </Box>
 

@@ -76,14 +76,14 @@ export default function Home() {
               shadow="sm"
             >
               <VStack gap={4} align="stretch">
-                <Heading size="md" color="gray.800">Anime Database</Heading>
+                <Heading size="md" color="gray.800">Anime Collection</Heading>
                 <Text color="gray.600">
-                  Access our comprehensive anime database with detailed information, images, and search capabilities.
+                  Access our comprehensive anime collection with detailed information, images, and search capabilities.
                 </Text>
                 <HStack justify="center">
                   <Link href="/information" passHref>
                     <Button colorScheme="teal" size="lg">
-                      Browse Anime Database
+                      Browse Anime Collection
                     </Button>
                   </Link>
                 </HStack>

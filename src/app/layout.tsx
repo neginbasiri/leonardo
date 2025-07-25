@@ -1,6 +1,5 @@
 'use client';
 
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from './providers';
 import { useState, useEffect } from 'react';
@@ -26,16 +25,6 @@ import {
   VStack,
   HStack,
 } from '@chakra-ui/react';
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const { user, setUser, isLoading } = useUser();

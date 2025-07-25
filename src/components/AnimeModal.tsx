@@ -41,8 +41,6 @@ interface AnimeModalProps {
 }
 
 export default function AnimeModal({ anime, isOpen, onClose }: AnimeModalProps) {
-  if (!anime || !isOpen) return null;
-
   // Handle keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -62,6 +60,8 @@ export default function AnimeModal({ anime, isOpen, onClose }: AnimeModalProps) 
       document.body.style.overflow = 'unset';
     };
   }, [isOpen, onClose]);
+
+  if (!anime || !isOpen) return null;
 
   const formatStatus = (status: string) => {
     return status.replace('_', ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase());

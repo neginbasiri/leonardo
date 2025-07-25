@@ -4,6 +4,9 @@ import { gql } from '@apollo/client';
 export const GET_POPULAR_ANIME = gql`
   query GetPopularAnime($page: Int, $perPage: Int) {
     Page(page: $page, perPage: $perPage) {
+      pageInfo {
+        total
+      }
       media(sort: POPULARITY_DESC, type: ANIME) {
         id
         title {
@@ -32,6 +35,9 @@ export const GET_POPULAR_ANIME = gql`
 export const SEARCH_ANIME = gql`
   query SearchAnime($search: String, $page: Int, $perPage: Int) {
     Page(page: $page, perPage: $perPage) {
+      pageInfo {
+        total
+      }
       media(search: $search, type: ANIME) {
         id
         title {
