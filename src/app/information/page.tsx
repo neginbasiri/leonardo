@@ -2,9 +2,9 @@
 
 import { useQuery } from '@apollo/client';
 import { useState, useEffect, useRef } from 'react';
-import { GET_POPULAR_ANIME, SEARCH_ANIME } from '../../lib/queries';
+import { GET_POPULAR_ANIME } from '../../lib/queries';
 import { HiChevronLeft, HiChevronRight } from 'react-icons/hi';
-import { Button, HStack, Input, ButtonGroup, IconButton, Pagination, Spinner, Box, Text, Flex, Heading, VStack, Container } from '@chakra-ui/react';
+import { HStack, ButtonGroup, IconButton, Pagination, Spinner, Box, Text, Flex, Heading, VStack, Container } from '@chakra-ui/react';
 import { useUser } from '../../contexts/UserContext';
 import AnimeList, { type Anime } from '../../components/AnimeList';
 import Link from 'next/link';
@@ -20,58 +20,62 @@ export default function InformationPage() {
   
   // Get initial values from URL parameters
   const initialPage = parseInt(searchParams.get('page') || '1');
-  const initialSearch = searchParams.get('search') || '';
   const initialPerPage = parseInt(searchParams.get('perPage') || '12');
 
-  // State for search, pagination, modal, etc.
-  const [searchTerm, setSearchTerm] = useState(initialSearch);
-  const [debouncedSearch, setDebouncedSearch] = useState(initialSearch);
-  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
+  // State for pagination, modal, etc.
   const [page, setPage] = useState(initialPage);
   const [perPage, setPerPage] = useState(initialPerPage);
   const [selectedAnime, setSelectedAnime] = useState<Anime | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const isInitialized = useRef(false);
 
-  // Debounce search
+  // Initialize state from URL parameters on mount
   useEffect(() => {
-    if (debounceTimeout.current) {
-      clearTimeout(debounceTimeout.current);
+    if (!isInitialized.current) {
+      setPage(initialPage);
+      setPerPage(initialPerPage);
+      isInitialized.current = true;
     }
-    debounceTimeout.current = setTimeout(() => {
-      if (searchTerm.length === 0 || searchTerm.length >= 3) {
-        setDebouncedSearch(searchTerm);
-        setPage(1);
-      }
-    }, 400);
-    return () => {
-      if (debounceTimeout.current) {
-        clearTimeout(debounceTimeout.current);
-      }
-    };
-  }, [searchTerm]);
+  }, [initialPage, initialPerPage]);
 
-  // Update URL when searchTerm or perPage changes
+  // Sync state with URL parameters when they change
   useEffect(() => {
+    if (!isInitialized.current) return;
+    
+    const currentPage = parseInt(searchParams.get('page') || '1');
+    const currentPerPage = parseInt(searchParams.get('perPage') || '12');
+    
+    // Only update if values actually changed to avoid infinite loops
+    if (currentPage !== page) {
+      setPage(currentPage);
+    }
+    if (currentPerPage !== perPage) {
+      setPerPage(currentPerPage);
+    }
+  }, [searchParams]);
+
+  // Update URL when state changes
+  useEffect(() => {
+    if (!isInitialized.current) return; // Skip on initial mount
+    
     const params = new URLSearchParams();
     if (page > 1) params.set('page', page.toString());
-    if (searchTerm) params.set('search', searchTerm);
     if (perPage !== 12) params.set('perPage', perPage.toString());
     const newURL = params.toString() ? `?${params.toString()}` : '';
     router.push(`/information${newURL}`, { scroll: false });
-  }, [searchTerm, perPage, page, router]);
+  }, [perPage, page, router]);
 
   // Data fetching
-  const { loading, error, data } = useQuery(
-    debouncedSearch ? SEARCH_ANIME : GET_POPULAR_ANIME,
-    {
-      variables: {
-        search: debouncedSearch || undefined,
-        page,
-        perPage,
-      },
-      skip: false,
-    }
-  );
+  const { loading, error, data } = useQuery(GET_POPULAR_ANIME, {
+    variables: {
+      page,
+      perPage,
+    },
+    skip: false,
+    fetchPolicy: 'cache-and-network', // Ensure fresh data is fetched
+    notifyOnNetworkStatusChange: true, // Notify when network status changes
+    errorPolicy: 'all', // Handle errors gracefully
+  });
 
   const animeList = data?.Page?.media || [];
   const total = data?.Page?.pageInfo?.total || 0;
@@ -86,11 +90,16 @@ export default function InformationPage() {
     setTimeout(() => setSelectedAnime(null), 100);
   };
 
-  // Per page change
+  // Per page change handler
   const handlePerPageChange = (value: string) => {
     const newPerPage = parseInt(value);
     setPerPage(newPerPage);
-    setPage(1);
+    setPage(1); // Reset to first page when changing items per page
+  };
+
+  // Page change handler
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
   };
 
   if (isLoading) {
@@ -130,93 +139,43 @@ export default function InformationPage() {
             Anime Information
           </Heading>
           <Text color="white" fontSize="lg">
-            Browse and search through our comprehensive anime list powered by Anime list
+            Browse through our comprehensive anime list powered by Anime list
           </Text>
         </Box>
 
-        {/* Search and Controls */}
-        <VStack gap={4} align="stretch">
-          {/* Search Input */}
-          <Box position="relative">
-            <Box
-              position="absolute"
-              left={3}
-              top="50%"
-              transform="translateY(-50%)"
-              color="gray.300"
-              zIndex={1}
+        {/* Controls Row */}
+        <Flex justify="space-between" align="center" flexWrap="wrap" gap={4}>
+          <Heading size="lg">
+            Popular Anime
+          </Heading>
+          <HStack gap={4}>
+            <Text color="white" fontSize="sm">
+              Items per page:
+            </Text>
+            <select
+              value={perPage}
+              onChange={(e) => handlePerPageChange(e.target.value)}
+              aria-label="Select number of items per page"
+              style={{
+                padding: '4px 8px',
+                borderRadius: '4px',
+                border: '1px solid #2d3748',
+                fontSize: '14px',
+                width: '80px',
+                background: '#1a202c',
+                color: 'white',
+              }}
             >
-              🔍
-            </Box>
-            <Input
-              placeholder="Search anime by title..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              size="lg"
-              pl={10}
-              aria-label="Search anime database"
-              role="searchbox"
-              aria-invalid={false}
-            />
-            {searchTerm && (
-              <Button
-                variant="ghost"
-                size="sm"
-                position="absolute"
-                right={3}
-                top="50%"
-                transform="translateY(-50%)"
-                color="gray.300"
-                zIndex={2}
-                bg="transparent"
-                border="none"
-                minW={0}
-                h="auto"
-                p={0}
-                onClick={() => setSearchTerm('')}
-                _hover={{ color: 'white', bg: 'transparent' }}
-                aria-label="Clear search"
-                fontSize="xl"
-              >
-                ×
-              </Button>
-            )}
-          </Box>
-
-          {/* Controls Row */}
-          <Flex justify="space-between" align="center" flexWrap="wrap" gap={4}>
-            <Heading size="lg">
-              {searchTerm ? `Search Results for "${searchTerm}"` : 'Popular Anime'}
-            </Heading>
-            <HStack gap={4}>
-              <Text color="white" fontSize="sm">
-                Items per page:
-              </Text>
-              <select
-                value={perPage}
-                onChange={(e) => handlePerPageChange(e.target.value)}
-                aria-label="Select number of items per page"
-                style={{
-                  padding: '4px 8px',
-                  borderRadius: '4px',
-                  border: '1px solid #2d3748',
-                  fontSize: '14px',
-                  width: '80px',
-                  background: '#1a202c',
-                  color: 'white',
-                }}
-              >
-                <option value={6}>6</option>
-                <option value={12}>12</option>
-                <option value={24}>24</option>
-                <option value={48}>48</option>
-              </select>
-              <Text color="white" fontSize="sm" aria-live="polite">
-                {total} results
-              </Text>
-            </HStack>
-          </Flex>
-        </VStack>
+              <option value={6}>6</option>
+              <option value={12}>12</option>
+              <option value={24}>24</option>
+              <option value={48}>48</option>
+            </select>
+            <Text color="white" fontSize="sm" aria-live="polite">
+              {total} results
+            </Text>
+          </HStack>
+        </Flex>
 
         {/* Loading/Error/No Results */}
         {loading && (
@@ -245,13 +204,8 @@ export default function InformationPage() {
         {animeList.length === 0 && !loading && (
           <Box p={8} bg="blue.50" color="blue.800" borderRadius="lg" textAlign="center">
             <Text fontSize="lg" fontWeight="medium">
-              {searchTerm ? `No anime found for "${searchTerm}"` : 'No anime data available.'}
+              No anime data available.
             </Text>
-            {searchTerm && (
-              <Text mt={2} fontSize="sm">
-                Try adjusting your search terms or browse popular anime instead.
-              </Text>
-            )}
           </Box>
         )}
 
@@ -265,14 +219,14 @@ export default function InformationPage() {
         />
 
         {/* Pagination */}
-        {animeList.length > 0 && (
+        {animeList.length > 0 && total > perPage && (
           <Flex width="100%" justify="center" mt={8} py={4}>
             <Box maxW="600px" width="100%" mx="auto" display="flex" justifyContent="center">
               <Pagination.Root
-                count={total}
-                pageSize={perPage}
+                count={Math.ceil(total / perPage)}
+                pageSize={1}
                 page={page}
-                onPageChange={(e) => setPage(e.page)}
+                onPageChange={(e) => handlePageChange(e.page)}
                 css={{
                   '[dataPart="ellipsis"]': {
                     color: 'white'
@@ -281,7 +235,12 @@ export default function InformationPage() {
               >
                 <ButtonGroup variant="ghost" size="sm" >
                   <Pagination.PrevTrigger asChild>
-                    <IconButton aria-label="Previous page" color="white" _hover={{ color: 'black', bg: 'white' }}>
+                    <IconButton 
+                      aria-label="Previous page" 
+                      color="white" 
+                      _hover={{ color: 'black', bg: 'white' }}
+                      disabled={page <= 1}
+                    >
                       <HiChevronLeft />
                     </IconButton>
                   </Pagination.PrevTrigger>
@@ -289,9 +248,9 @@ export default function InformationPage() {
                     render={(pageObj) => (
                       <IconButton
                         key={pageObj.value}
-                        variant={{ base: "ghost", _selected: "outline" }}
+                        variant={pageObj.value === page ? "outline" : "ghost"}
                         aria-label={`Page ${pageObj.value}`}
-                        onClick={() => setPage(pageObj.value)}
+                        onClick={() => handlePageChange(pageObj.value)}
                         color="white"
                         _hover={{ color: 'black', bg: 'white' }}
                         _selected={{ color: 'black', bg: 'white' }}
@@ -301,7 +260,12 @@ export default function InformationPage() {
                     )}
                   />
                   <Pagination.NextTrigger asChild>
-                    <IconButton aria-label="Next page" color="white" _hover={{ color: 'black', bg: 'white' }}>
+                    <IconButton 
+                      aria-label="Next page" 
+                      color="white" 
+                      _hover={{ color: 'black', bg: 'white' }}
+                      disabled={page >= Math.ceil(total / perPage)}
+                    >
                       <HiChevronRight />
                     </IconButton>
                   </Pagination.NextTrigger>

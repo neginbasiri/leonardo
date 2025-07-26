@@ -259,20 +259,8 @@ describe('InformationPage', () => {
       );
 
       expect(screen.getByText('Anime Information')).toBeInTheDocument();
-      expect(screen.getByText(/Browse and search through our comprehensive anime list/)).toBeInTheDocument();
+      expect(screen.getByText(/Browse through our comprehensive anime list/)).toBeInTheDocument();
       expect(screen.getByTestId('link')).toHaveTextContent('Home');
-    });
-
-    it('should render search input', () => {
-      render(
-        <MockedProvider mocks={mocks} addTypename={false}>
-          <InformationPage />
-        </MockedProvider>
-      );
-
-      const searchInput = screen.getByTestId('input');
-      expect(searchInput).toBeInTheDocument();
-      expect(searchInput).toHaveAttribute('placeholder', 'Search anime by title...');
     });
 
     it('should render per page selector', () => {
@@ -296,80 +284,6 @@ describe('InformationPage', () => {
       await waitFor(() => {
         expect(screen.getByTestId('pagination-root')).toBeInTheDocument();
       });
-    });
-  });
-
-  describe('Search Functionality', () => {
-    beforeEach(() => {
-      mockUseUser.mockReturnValue({
-        user: { username: 'testuser', job: 'developer' },
-        isLoading: false
-      });
-    });
-
-    it('should update search term when typing', () => {
-      render(
-        <MockedProvider mocks={mocks} addTypename={false}>
-          <InformationPage />
-        </MockedProvider>
-      );
-
-      const searchInput = screen.getByTestId('input');
-      fireEvent.change(searchInput, { target: { value: 'test' } });
-
-      expect(searchInput).toHaveValue('test');
-    });
-
-    it('should show clear button when search term is entered', () => {
-      render(
-        <MockedProvider mocks={mocks} addTypename={false}>
-          <InformationPage />
-        </MockedProvider>
-      );
-
-      const searchInput = screen.getByTestId('input');
-      fireEvent.change(searchInput, { target: { value: 'test' } });
-
-      const clearButton = screen.getByText('×');
-      expect(clearButton).toBeInTheDocument();
-    });
-
-    it('should clear search when clear button is clicked', () => {
-      render(
-        <MockedProvider mocks={mocks} addTypename={false}>
-          <InformationPage />
-        </MockedProvider>
-      );
-
-      const searchInput = screen.getByTestId('input');
-      fireEvent.change(searchInput, { target: { value: 'test' } });
-
-      const clearButton = screen.getByText('×');
-      fireEvent.click(clearButton);
-
-      expect(searchInput).toHaveValue('');
-    });
-  });
-
-  describe('Per Page Selection', () => {
-    beforeEach(() => {
-      mockUseUser.mockReturnValue({
-        user: { username: 'testuser', job: 'developer' },
-        isLoading: false
-      });
-    });
-
-    it('should change items per page when selector is used', () => {
-      render(
-        <MockedProvider mocks={mocks} addTypename={false}>
-          <InformationPage />
-        </MockedProvider>
-      );
-
-      const perPageSelect = screen.getByDisplayValue('12');
-      fireEvent.change(perPageSelect, { target: { value: '24' } });
-
-      expect(perPageSelect).toHaveValue('24');
     });
   });
 
@@ -480,12 +394,12 @@ describe('InformationPage', () => {
       });
     });
 
-    it('should show no results message when search returns empty', async () => {
+    it('should show no results message when no data is available', async () => {
       const emptyMocks = [
         {
           request: {
-            query: SEARCH_ANIME,
-            variables: { search: 'nonexistent', page: 1, perPage: 12 }
+            query: GET_POPULAR_ANIME,
+            variables: { page: 1, perPage: 12 }
           },
           result: {
             data: {
@@ -506,14 +420,8 @@ describe('InformationPage', () => {
         </MockedProvider>
       );
 
-      const searchInput = screen.getByTestId('input');
-      fireEvent.change(searchInput, { target: { value: 'nonexistent' } });
-
-      // Fast-forward timers to trigger debounced search
-      jest.advanceTimersByTime(500);
-
       await waitFor(() => {
-        expect(screen.getByText(/No anime found for "nonexistent"/)).toBeInTheDocument();
+        expect(screen.getByText('No anime data available.')).toBeInTheDocument();
       });
     });
   });
@@ -565,7 +473,6 @@ describe('InformationPage', () => {
     it('should initialize with URL parameters', () => {
       // Set params for this test
       params.page = '2';
-      params.search = 'test';
       params.perPage = '24';
       mockGet.mockClear();
 
@@ -576,7 +483,6 @@ describe('InformationPage', () => {
       );
 
       expect(mockGet).toHaveBeenCalledWith('page');
-      expect(mockGet).toHaveBeenCalledWith('search');
       expect(mockGet).toHaveBeenCalledWith('perPage');
     });
   });
