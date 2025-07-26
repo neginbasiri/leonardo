@@ -1,17 +1,18 @@
 'use client';
 
 import { useEffect } from 'react';
-import ErrorBoundary from './ErrorBoundary';
 import {
   Box,
   Text,
-  Image,
-  Badge,
-  HStack,
-  VStack,
-  Flex,
   Button,
+  Flex,
+  VStack,
+  HStack,
+  Badge,
+  Image,
 } from '@chakra-ui/react';
+import ErrorBoundary from './ErrorBoundary';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 
 interface Anime {
   id: number;
@@ -41,6 +42,9 @@ interface AnimeModalProps {
 }
 
 export default function AnimeModal({ anime, isOpen, onClose }: AnimeModalProps) {
+  // Use the improved body scroll lock hook
+  useBodyScrollLock(isOpen);
+
   // Handle keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -51,13 +55,10 @@ export default function AnimeModal({ anime, isOpen, onClose }: AnimeModalProps) 
 
     if (isOpen) {
       document.addEventListener('keydown', handleKeyDown);
-      // Prevent body scroll when modal is open
-      document.body.style.overflow = 'hidden';
     }
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = 'unset';
     };
   }, [isOpen, onClose]);
 

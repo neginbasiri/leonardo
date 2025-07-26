@@ -272,7 +272,7 @@ describe('AnimeModal', () => {
       
       rerender(<AnimeModal {...defaultProps} isOpen={false} />);
       
-      expect(document.body.style.overflow).toBe('unset');
+      expect(document.body.style.overflow).toBe('');
     });
 
     it('should unlock body scroll on unmount', () => {
@@ -282,7 +282,7 @@ describe('AnimeModal', () => {
       
       unmount();
       
-      expect(document.body.style.overflow).toBe('unset');
+      expect(document.body.style.overflow).toBe('');
     });
   });
 

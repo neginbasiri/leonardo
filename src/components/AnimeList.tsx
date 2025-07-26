@@ -1,19 +1,17 @@
 'use client';
 
-
-import ErrorBoundary from './ErrorBoundary';
 import {
   Box,
   Grid,
+  Image,
   Heading,
   Text,
-  Image,
   Badge,
-  HStack,
   VStack,
+  HStack,
 } from '@chakra-ui/react';
-import dynamic from 'next/dynamic';
-const AnimeModal = dynamic(() => import('./AnimeModal'), { ssr: false, loading: () => null });
+import ErrorBoundary from './ErrorBoundary';
+import AnimeModal from './AnimeModal';
 
 export interface Anime {
   id: number;
@@ -44,7 +42,7 @@ interface AnimeListProps {
   onCloseModal: () => void;
 }
 
-export default function AnimeList({ 
+export default function AnimeList({
   animeList,
   onAnimeClick,
   selectedAnime,
@@ -66,12 +64,15 @@ export default function AnimeList({
           {animeList.map((anime, index) => (
             <Box
               key={anime.id || index}
-              bg="gray.800"
+              bg="white"
               borderRadius="lg"
+              border="1px"
+              borderColor="gray.200"
+              shadow="md"
               p={4}
               cursor="pointer"
               transition="all 0.2s"
-              _hover={{ bg: "gray.700", transform: "translateY(-2px)" }}
+              _hover={{ bg: "gray.50", transform: "translateY(-2px)", shadow: "lg" }}
               onClick={() => onAnimeClick(anime)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {

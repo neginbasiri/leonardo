@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useUser } from '../contexts/UserContext';
 import { useHydration } from '../hooks/useHydration';
+import { useBodyScrollLock } from '../hooks/useBodyScrollLock';
 import useFormValidation from '../hooks/useFormValidation';
 import {
   DialogRoot,
@@ -30,6 +31,9 @@ export default function UserInfoDialog({ isOpen, onClose, isBlocking }: UserInfo
   const { user, setUser } = useUser();
   const [editing, setEditing] = useState(false);
   const isHydrated = useHydration();
+  
+  // Use the improved body scroll lock hook
+  useBodyScrollLock(isOpen);
 
   // Initialize form validation hooks
   const {
@@ -57,23 +61,12 @@ export default function UserInfoDialog({ isOpen, onClose, isBlocking }: UserInfo
     }
   };
 
-  // Handle body scroll locking when modal is open
+  // Handle editing state when modal opens
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-      // Set editing to true when dialog opens for non-blocking mode
-      if (!isBlocking && user) {
-        setEditing(true);
-      }
-    } else {
-      document.body.style.overflow = 'unset';
+    if (isOpen && !isBlocking && user) {
+      setEditing(true);
     }
-
-    // Cleanup on unmount
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen, isBlocking, user]); // Include user in dependencies
+  }, [isOpen, isBlocking, user]);
 
   if (!isHydrated) {
     return null;
@@ -100,8 +93,15 @@ export default function UserInfoDialog({ isOpen, onClose, isBlocking }: UserInfo
         />
       )}
       
-      {/* Blocking Dialog */}
-      <DialogRoot open={isOpen} onOpenChange={open => { if (!open) return; }}>
+      {/* Dialog */}
+      <DialogRoot 
+        open={isOpen} 
+        onOpenChange={(open) => { 
+          if (!open) {
+            onClose();
+          }
+        }}
+      >
         <DialogContent 
           style={{
             position: 'fixed',
@@ -210,4 +210,4 @@ export default function UserInfoDialog({ isOpen, onClose, isBlocking }: UserInfo
       </DialogRoot>
     </>
   );
-} 
+}
