@@ -44,7 +44,6 @@ This document outlines the accessibility features and compliance standards imple
 - **Submit Form**: Tab to "Save" button and press Enter
 
 ### Anime List
-- **Search**: Tab to search input and type to search
 - **Per Page Selector**: Tab to dropdown and use arrow keys to select
 - **Anime Cards**: Tab to any anime card and press Enter to view details
 - **Pagination**: Tab to Previous/Next buttons and press Enter
@@ -77,13 +76,6 @@ This document outlines the accessibility features and compliance standards imple
 
 #### Anime List
 ```tsx
-// Search input
-<Input 
-  aria-label="Search anime database"
-  aria-describedby="search-help"
-  role="searchbox"
-/>
-
 // Anime cards
 <Box 
   role="button"
@@ -152,11 +144,6 @@ This document outlines the accessibility features and compliance standards imple
 - **Validation**: Real-time validation with `aria-invalid`
 - **Error Messages**: Clear error descriptions
 - **Submit Button**: Disabled state with helpful description
-
-### Search Form
-- **Search Role**: Proper `role="searchbox"` for search input
-- **Search Help**: Descriptive text explaining search functionality
-- **Live Results**: Results count announced to screen readers
 
 ## Color and Contrast
 

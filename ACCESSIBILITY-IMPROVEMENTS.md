@@ -46,15 +46,6 @@ This document summarizes all accessibility improvements implemented in the Leona
 
 ## 🎬 Anime List Component (`src/components/AnimeList.tsx`)
 
-### Search Input
-- **Before**: Basic search input
-- **After**: 
-  - `aria-label="Search anime database"`
-  - `aria-describedby="search-help"`
-  - `role="searchbox"`
-  - Help text explaining search functionality
-- **Impact**: Screen readers understand the search purpose and functionality
-
 ### Per Page Selector
 - **Before**: Basic dropdown without accessibility
 - **After**: `aria-label="Select number of items per page"`

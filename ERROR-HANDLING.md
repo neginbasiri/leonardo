@@ -129,19 +129,12 @@ export const VALIDATION_SCHEMAS = {
     username: {
       required: true,
       minLength: 2,
-      maxLength: 30,
-      pattern: VALIDATION_PATTERNS.USERNAME,
+      maxLength: 50,
     },
     jobTitle: {
       required: true,
       minLength: 2,
       maxLength: 50,
-    },
-  },
-  SEARCH: {
-    query: {
-      minLength: 1,
-      maxLength: 100,
     },
   },
   CONTACT: {
@@ -215,33 +208,6 @@ const {
 {touched.username && validationResults.username?.errors.length > 0 && (
   <Text fontSize="sm" color="red.500" mt={1}>
     {validationResults.username.errors[0]}
-  </Text>
-)}
-```
-
-#### Search Form Validation
-
-```typescript
-// In AnimeList.tsx
-const {
-  isValid: isSearchValid,
-  errors: searchErrors,
-  touched: searchTouched,
-  markAsTouched: markSearchAsTouched,
-} = useFieldValidation(searchTerm, VALIDATION_SCHEMAS.SEARCH.query, true);
-
-<Input
-  value={searchTerm}
-  onChange={(e) => {
-    handleSearch(e.target.value);
-    markSearchAsTouched();
-  }}
-  onBlur={() => markSearchAsTouched()}
-  aria-invalid={searchTouched && !isSearchValid}
-/>
-{searchTouched && searchErrors.length > 0 && (
-  <Text fontSize="sm" color="red.500" mt={1}>
-    {searchErrors[0]}
   </Text>
 )}
 ```
