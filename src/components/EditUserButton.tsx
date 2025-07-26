@@ -37,7 +37,6 @@ export default function EditUserButton() {
         isOpen={isDialogOpen}
         onClose={handleClose}
         isBlocking={false}
-        onEdit={() => setIsDialogOpen(true)}
       />
     </>
   );
