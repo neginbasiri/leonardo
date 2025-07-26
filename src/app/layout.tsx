@@ -8,7 +8,6 @@ import ErrorBoundary from '../components/ErrorBoundary';
 import UserInfoDialog from '../components/UserInfoDialog';
 import EditUserButton from '../components/EditUserButton';
 import {
-  Button,
   Box,
   Text,
   Flex,

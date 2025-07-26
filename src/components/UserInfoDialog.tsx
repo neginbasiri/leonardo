@@ -24,13 +24,11 @@ interface UserInfoDialogProps {
   isOpen: boolean;
   onClose: () => void;
   isBlocking: boolean;
-  onEdit?: () => void;
 }
 
-export default function UserInfoDialog({ isOpen, onClose, isBlocking, onEdit }: UserInfoDialogProps) {
+export default function UserInfoDialog({ isOpen, onClose, isBlocking }: UserInfoDialogProps) {
   const { user, setUser } = useUser();
   const [editing, setEditing] = useState(false);
-  const [submitAttempted, setSubmitAttempted] = useState(false);
   const isHydrated = useHydration();
 
   // Initialize form validation hooks
@@ -42,31 +40,19 @@ export default function UserInfoDialog({ isOpen, onClose, isBlocking, onEdit }: 
     markFieldAsTouched,
     markAllAsTouched,
     isValid,
-    errors,
   } = useFormValidation(
     { username: user?.username || '', jobTitle: user?.job || '' },
     true // validate on change
   );
 
-  // Open modal for editing
-  const handleEdit = () => {
-    updateField('username', user?.username || '');
-    updateField('jobTitle', user?.job || '');
-    setEditing(true);
-    setSubmitAttempted(false);
-    if (onEdit) onEdit();
-  };
-
   // Save user info
   const handleSave = () => {
-    setSubmitAttempted(true);
     markAllAsTouched();
     
     if (isValid) {
       const info = { username: formData.username, job: formData.jobTitle };
       setUser(info);
       setEditing(false);
-      setSubmitAttempted(false);
       onClose();
     }
   };
@@ -87,7 +73,7 @@ export default function UserInfoDialog({ isOpen, onClose, isBlocking, onEdit }: 
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [isOpen, isBlocking, !!user]); // Use !!user to convert to boolean
+  }, [isOpen, isBlocking, user]); // Include user in dependencies
 
   if (!isHydrated) {
     return null;

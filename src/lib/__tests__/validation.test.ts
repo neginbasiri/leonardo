@@ -27,14 +27,14 @@ describe('Validation Functions', () => {
       });
 
       it('should return error for null required field', () => {
-        const result = validateField(null as any, { required: true });
+        const result = validateField(null as unknown as string, { required: true });
         
         expect(result.isValid).toBe(false);
         expect(result.errors).toContain('This field is required');
       });
 
       it('should return error for undefined required field', () => {
-        const result = validateField(undefined as any, { required: true });
+        const result = validateField(undefined as unknown as string, { required: true });
         
         expect(result.isValid).toBe(false);
         expect(result.errors).toContain('This field is required');

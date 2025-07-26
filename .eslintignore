@@ -1,0 +1,12 @@
+.next/
+node_modules/
+dist/
+build/
+coverage/
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+jest.config.js
+jest.setup.js
+scripts/ 

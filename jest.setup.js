@@ -25,15 +25,6 @@ jest.mock('next/navigation', () => ({
   },
 }))
 
-// Mock Chakra UI components if needed
-// jest.mock('@chakra-ui/react', () => {
-//   const originalModule = jest.requireActual('@chakra-ui/react');
-//   return {
-//     ...originalModule,
-//     // Add specific component mocks here if needed
-//   };
-// })
-
 // Global test setup
 beforeEach(() => {
   // Clear all mocks before each test

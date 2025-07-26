@@ -41,24 +41,9 @@ export default class ErrorBoundary extends Component<Props, State> {
     };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    this.setState({
-      error,
-      errorInfo,
-    });
-
-    // Log error to console in development
-    if (process.env.NODE_ENV === 'development') {
-      console.error('ErrorBoundary caught an error:', error, errorInfo);
-    }
-
-    // Call custom error handler if provided
-    if (this.props.onError) {
-      this.props.onError(error, errorInfo);
-    }
-
-    // In production, you might want to send this to an error reporting service
-    // Example: Sentry.captureException(error, { extra: errorInfo });
+  componentDidCatch(_error: Error, _errorInfo: React.ErrorInfo) {
+    // Log error to an error reporting service
+    console.error('Error caught by boundary:', _error, _errorInfo);
   }
 
   handleRetry = () => {

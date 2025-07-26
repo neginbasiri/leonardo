@@ -13,6 +13,22 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
+    ignores: [
+      '.next/**',
+      'node_modules/**',
+      'dist/**',
+      'build/**',
+      'coverage/**',
+      '**/*.test.ts',
+      '**/*.test.tsx',
+      '**/*.spec.ts',
+      '**/*.spec.tsx',
+      'jest.config.js',
+      'jest.setup.js',
+      'scripts/**',
+    ],
+  },
+  {
     plugins: {
       'unused-imports': unusedImports,
     },

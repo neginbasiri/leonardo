@@ -63,18 +63,15 @@ export default function AnimeList({
           }}
           gap={6}
         >
-          {animeList.map((anime) => (
+          {animeList.map((anime, index) => (
             <Box
-              key={anime.id}
-              border="1px"
-              borderColor="gray.200"
+              key={anime.id || index}
+              bg="gray.800"
               borderRadius="lg"
-              overflow="hidden"
-              shadow="md"
-              _hover={{ shadow: 'lg', transform: 'translateY(-2px)' }}
-              bg="white"
-              transition="all 0.2s"
+              p={4}
               cursor="pointer"
+              transition="all 0.2s"
+              _hover={{ bg: "gray.700", transform: "translateY(-2px)" }}
               onClick={() => onAnimeClick(anime)}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
