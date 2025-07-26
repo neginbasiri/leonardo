@@ -266,17 +266,22 @@ export default function InformationPage() {
 
         {/* Pagination */}
         {animeList.length > 0 && (
-          <Flex width="100%" justify="center" mt={8}  py={4}>
-            <Box maxW="600px" width="100%">
+          <Flex width="100%" justify="center" mt={8} py={4}>
+            <Box maxW="600px" width="100%" mx="auto" display="flex" justifyContent="center">
               <Pagination.Root
                 count={total}
                 pageSize={perPage}
                 page={page}
                 onPageChange={(e) => setPage(e.page)}
+                css={{
+                  '[dataPart="ellipsis"]': {
+                    color: 'white'
+                  }
+                }}
               >
                 <ButtonGroup variant="ghost" size="sm" >
                   <Pagination.PrevTrigger asChild>
-                    <IconButton aria-label="Previous page">
+                    <IconButton aria-label="Previous page" color="white" _hover={{ color: 'black', bg: 'white' }}>
                       <HiChevronLeft />
                     </IconButton>
                   </Pagination.PrevTrigger>
@@ -287,13 +292,16 @@ export default function InformationPage() {
                         variant={{ base: "ghost", _selected: "outline" }}
                         aria-label={`Page ${pageObj.value}`}
                         onClick={() => setPage(pageObj.value)}
+                        color="white"
+                        _hover={{ color: 'black', bg: 'white' }}
+                        _selected={{ color: 'black', bg: 'white' }}
                       >
                         {pageObj.value}
                       </IconButton>
                     )}
                   />
                   <Pagination.NextTrigger asChild>
-                    <IconButton aria-label="Next page">
+                    <IconButton aria-label="Next page" color="white" _hover={{ color: 'black', bg: 'white' }}>
                       <HiChevronRight />
                     </IconButton>
                   </Pagination.NextTrigger>

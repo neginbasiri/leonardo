@@ -7,3 +7,12 @@ html, body, #__next {
 }
 
 /* Remove all Tailwind and custom font/color settings. Chakra UI will handle these. */
+
+[data-scope="pagination"][data-part="ellipsis"] {
+  color: white !important;
+}
+
+[data-scope="pagination"][data-part="ellipsis"]:hover {
+  color: black !important;
+  background-color: white !important;
+}
